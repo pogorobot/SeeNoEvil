@@ -66,6 +66,11 @@ class GameInstance(object):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
+                elif event.type == KEYDOWN:
+                    if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                        self.environment.player.walkRight()
+                    if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                        self.environment.player.walkLeft()
             self.environment.draw()
             pygame.display.flip()
             fpsclock.tick(fps)
@@ -82,6 +87,7 @@ class Cave(object):
             self.ceiling.append((i * self.tileSize, random.randint(0, self.height / 4)))
         for i in range((self.width / self.tileSize) + 1):
             self.floor.append((i * self.tileSize, random.randint(self.height * 3 / 4, self.height)))        
+        self.player = Explorer(self)
     def draw(self):
         screen.fill(self.backgroundColor)
         oldPoint = (0, 0)
@@ -92,6 +98,7 @@ class Cave(object):
         for point in self.floor:
             self.drawStalagmiteHalf(point, oldPoint)
             oldPoint = point
+        self.player.draw()
     def drawStalactiteHalf(self, point, oldPoint):
         (x, y) = point
         if oldPoint == (0, 0):
@@ -127,6 +134,30 @@ class Cave(object):
             pygame.draw.polygon(screen, wallColor, [(leftX, leftY), (x, y), (leftX, y)])
         else:                            #the triangle points left
             pygame.draw.polygon(screen, wallColor, [(leftX, leftY), (x, y), (x, leftY)])
+    def floorLevel(self, x):
+        index = int(x / self.tileSize)   
+        offset = x % self.tileSize
+        heightDifference = self.floor[index+1][1] - self.floor[index][1]
+        if offset == 0:
+            height = self.floor[index][1]
+        else:
+            height = self.floor[index][1] + heightDifference * offset / self.tileSize
+        return height
+    
+class Explorer(object):
+    def __init__(self, cave):
+        self.cave = cave
+        self.x = random.randint(0, cave.width)
+        self.y = cave.floorLevel(self.x)
+        self.size = 10
+    def draw(self):
+        pygame.draw.circle(screen, dragonColor, (self.x, self.y), self.size)
+    def walkLeft(self):
+        self.x -= 1
+        self.y = self.cave.floorLevel(self.x)
+    def walkRight(self):
+        slef.x += 1
+        self.y = self.cave.floorLevel(self.x)
 
 def main():
     pygame.init()
