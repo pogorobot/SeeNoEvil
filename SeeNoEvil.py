@@ -149,15 +149,22 @@ class Explorer(object):
         self.cave = cave
         self.x = random.randint(0, cave.width)
         self.y = cave.floorLevel(self.x)
-        self.size = 10
+        self.height = 30
+        self.width = 10
+        self.boundingBox = (self.x, self.y, self.width, self.height)
+        self.speed = 7
     def draw(self):
-        pygame.draw.circle(screen, dragonColor, (self.x, self.y), self.size)
+        pygame.draw.rect(screen, dragonColor, self.boundingBox)
     def walkLeft(self):
-        self.x -= 1
-        self.y = self.cave.floorLevel(self.x)
+        self.x -= self.speed
+        self.y = self.cave.floorLevel(self.x) - self.height
+        self.updateBox()
     def walkRight(self):
-        slef.x += 1
-        self.y = self.cave.floorLevel(self.x)
+        self.x += self.speed
+        self.y = self.cave.floorLevel(self.x) - self.height
+        self.updateBox()
+    def updateBox(self):
+        self.boundingBox = (self.x, self.y, self.width, self.height)
 
 def main():
     pygame.init()
