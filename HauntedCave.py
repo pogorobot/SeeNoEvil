@@ -54,19 +54,38 @@ def oppositeDirection(direction):
 class Game(object):
     def __init__(self):
         pygame.display.set_caption('Haunted Cave')
+        self.cave = Cave()
         self.running = True
         self.Run()
     def Run(self):
         while self.running:            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.running = False            
+                    self.running = False
+            self.cave.update()
+            self.cave.draw()
             pygame.display.flip()
             fpsclock.tick(FPS)
         
 #Ghost objects, player-controlled, float through everything and are very simple.
 
 #Cave object, holds everything else within it. Scrolls across multiple screens
+class Cave(object):
+    def __init__(self):
+        self.width = WIDTH #just one screen size for now
+        self.height = HEIGHT
+        self.backgroundColor = (100, 67, 68)
+        self.terrain = []
+        self.population = []
+    def update(self):
+        for creature in self.population:
+            creature.update()
+    def draw(self):
+        screen.fill(self.backgroundColor)
+        for item in self.terrain:
+            item.draw()
+        for creature in self.population:
+            creature.draw()
 
 #Wall object, really just a big fat obstacle. Can be floated through by player
 
