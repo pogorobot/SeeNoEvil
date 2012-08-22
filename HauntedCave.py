@@ -105,6 +105,7 @@ class Ghost(object):
         self.rectangle.center = self.center
     def draw(self):
         pygame.draw.rect(screen, self.color, self.rectangle)
+        
 
 #Cave object, holds everything else within it. Scrolls across multiple screens
 class Cave(object):
@@ -114,11 +115,16 @@ class Cave(object):
         self.backgroundColor = (100, 67, 68)
         self.terrain = []
         self.population = []
+        backgroundImage = pygame.image.load("Eye of the Coyote.jpg")
+        self.backgroundImage = pygame.transform.smoothscale(backgroundImage, (self.width, self.height))
+        self.camera = (WIDTH / 2, HEIGHT / 2)
     def update(self):
         for creature in self.population:
             creature.update()
+    def trackCamera(self, target):
+        self.camera = target.center
     def draw(self):
-        screen.fill(self.backgroundColor)
+        screen.blit(self.backgroundImage, (0, 0), (self.camera[0] - WIDTH / 2, self.camera[1] - HEIGHT / 2, WIDTH, HEIGHT))
         for item in self.terrain:
             item.draw()
         for creature in self.population:
