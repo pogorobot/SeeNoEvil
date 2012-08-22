@@ -55,6 +55,8 @@ class Game(object):
     def __init__(self):
         pygame.display.set_caption('Haunted Cave')
         self.cave = Cave()
+        self.player = Ghost()
+        self.cave.population.append(self.player)
         self.running = True
         self.Run()
     def Run(self):
@@ -62,12 +64,47 @@ class Game(object):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                        self.player.flap(RIGHT)
+                    if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                        self.player.flap(LEFT)
+                    if event.key == pygame.K_UP or event.key == pygame.K_w:
+                        self.player.flap(UP)
+                    if event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                        self.player.flap(DOWN)
             self.cave.update()
             self.cave.draw()
             pygame.display.flip()
             fpsclock.tick(FPS)
         
 #Ghost objects, player-controlled, float through everything and are very simple.
+class Ghost(object):
+    def __init__(self):
+        self.width = 25
+        self.height = 25
+        self.x = random.randint(0, WIDTH)
+        self.y = random.randint(0, HEIGHT)
+        self.color = (120, 200, 250)
+        self.center = (self.x, self.y)
+        self.rectangle = Rect(0, 0, self.width, self.height)
+        self.rectangle.center = self.center
+        self.angle = 0
+        self.speed = 0
+    #change velocity in a direction
+    def flap(self, (angle, speed)): 
+        (self.angle, self.speed) = addVectors((self.angle, self.speed), (angle, speed))
+    #continue with present momentum
+    def move(self):
+        self.x += math.sin(self.angle) * self.speed
+        self.y -= math.cos(self.angle) * self.speed
+    #master function, entry point to everything done in every loop
+    def update(self):
+        self.move()
+        self.center = (self.x, self.y)
+        self.rectangle.center = self.center
+    def draw(self):
+        pygame.draw.rect(screen, self.color, self.rectangle)
 
 #Cave object, holds everything else within it. Scrolls across multiple screens
 class Cave(object):
