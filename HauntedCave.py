@@ -74,6 +74,7 @@ class Game(object):
                     if event.key == pygame.K_DOWN or event.key == pygame.K_s:
                         self.player.flap(DOWN)
             self.cave.update()
+            self.cave.trackCamera(self.player)
             self.cave.draw()
             pygame.display.flip()
             fpsclock.tick(FPS)
@@ -110,8 +111,8 @@ class Ghost(object):
 #Cave object, holds everything else within it. Scrolls across multiple screens
 class Cave(object):
     def __init__(self):
-        self.width = WIDTH #just one screen size for now
-        self.height = HEIGHT
+        self.width = WIDTH * 2
+        self.height = HEIGHT * 2
         self.backgroundColor = (100, 67, 68)
         self.terrain = []
         self.population = []
