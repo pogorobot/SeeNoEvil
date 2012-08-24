@@ -55,7 +55,7 @@ class Game(object):
     def __init__(self):
         pygame.display.set_caption('Haunted Cave')
         self.cave = Cave()
-        self.player = Ghost()
+        self.player = Ghost(self.cave)
         self.cave.population.append(self.player)
         self.running = True
         self.Run()
@@ -81,7 +81,7 @@ class Game(object):
         
 #Ghost objects, player-controlled, float through everything and are very simple.
 class Ghost(object):
-    def __init__(self):
+    def __init__(self, cave):
         self.width = 25
         self.height = 25
         self.x = random.randint(0, WIDTH)
@@ -92,6 +92,7 @@ class Ghost(object):
         self.rectangle.center = self.center
         self.angle = 0
         self.speed = 0
+        self.cave = cave
     #change velocity in a direction
     def flap(self, (angle, speed)): 
         (self.angle, self.speed) = addVectors((self.angle, self.speed), (angle, speed))
@@ -105,7 +106,7 @@ class Ghost(object):
         self.center = (self.x, self.y)
         self.rectangle.center = self.center
     def draw(self):
-        pygame.draw.rect(screen, self.color, self.rectangle)
+        pygame.draw.rect(self.cave.canvas, self.color, self.rectangle)
         
 
 #Cave object, holds everything else within it. Scrolls across multiple screens
@@ -119,17 +120,26 @@ class Cave(object):
         backgroundImage = pygame.image.load("Eye of the Coyote.jpg")
         self.backgroundImage = pygame.transform.smoothscale(backgroundImage, (self.width, self.height))
         self.camera = (WIDTH / 2, HEIGHT / 2)
+        self.canvas = pygame.Surface((self.width, self.height))
     def update(self):
         for creature in self.population:
             creature.update()
     def trackCamera(self, target):
-        self.camera = target.center
+        (x, y) = self.camera
+        if target.x < self.width - (WIDTH / 2):
+            if target.x > WIDTH / 2:
+                x = target.x
+        if target.y < self.height - (HEIGHT / 2):
+            if target.y > HEIGHT / 2:
+                y = target.y
+        self.camera = (x, y)
     def draw(self):
-        screen.blit(self.backgroundImage, (0, 0), (self.camera[0] - WIDTH / 2, self.camera[1] - HEIGHT / 2, WIDTH, HEIGHT))
+        self.canvas.blit(self.backgroundImage, (0, 0))
         for item in self.terrain:
             item.draw()
         for creature in self.population:
             creature.draw()
+        screen.blit(self.canvas, (0, 0), (self.camera[0] - (WIDTH / 2), self.camera[1] - (HEIGHT / 2), WIDTH, HEIGHT))
 
 #Wall object, really just a big fat obstacle. Can be floated through by player
 
