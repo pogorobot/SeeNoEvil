@@ -100,6 +100,11 @@ class Ghost(object):
     def move(self):
         self.x += math.sin(self.angle) * self.speed
         self.y -= math.cos(self.angle) * self.speed
+        #bounce off walls
+        if self.x < self.width / 2 or self.x > self.cave.width - self.width / 2:
+            self.angle = -self.angle
+        if self.y < self.height / 2 or self.y > self.cave.height - self.height / 2:
+            self.angle = math.pi - self.angle
     #master function, entry point to everything done in every loop
     def update(self):
         self.move()
