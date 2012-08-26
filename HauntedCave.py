@@ -15,6 +15,7 @@ WIDTH = 640
 HEIGHT = 480
 
 GRAVITY = (math.pi, 0.8)
+DRAG = 0.99
 
 UP = (0, 1)
 RIGHT = (math.pi / 2, 1)
@@ -57,6 +58,7 @@ class Game(object):
         self.cave = Cave()
         self.player = Ghost(self.cave)
         self.cave.population.append(self.player)
+        self.cave.population.append(Flyer(self.cave, self.player)) #add an enemy
         self.running = True
         self.Run()
     def Run(self):
@@ -92,6 +94,7 @@ class Ghost(object):
         self.rectangle.center = self.center
         self.angle = 0
         self.speed = 0
+        self.drag = 1 #drag coefficient. Ghosts are frictionless.
         self.cave = cave
     #change velocity in a direction
     def flap(self, (angle, speed)): 
@@ -105,6 +108,8 @@ class Ghost(object):
             self.angle = -self.angle
         if self.y < self.height / 2 or self.y > self.cave.height - self.height / 2:
             self.angle = math.pi - self.angle
+        #slow down
+        self.speed *= self.drag
     #master function, entry point to everything done in every loop
     def update(self):
         self.move()
@@ -112,6 +117,21 @@ class Ghost(object):
         self.rectangle.center = self.center
     def draw(self):
         pygame.draw.rect(self.cave.canvas, self.color, self.rectangle)
+        
+class Flyer(Ghost):
+    def __init__(self, cave, target):
+        super(Flyer, self).__init__(cave)
+        self.target = target
+    def update(self):
+        #self.flap(random.choice(directions))
+        self.chase(self.target)
+        super(Flyer, self).update()
+    def chase(self, target):        
+        dy = self.target.y - self.y
+        dx = self.target.x - self.x
+        angle = math.atan2(dx, -dy)
+        approachVector = addVectors((angle, 1), (target.angle, target.speed))
+        self.flap((angle, 1))
         
 
 #Cave object, holds everything else within it. Scrolls across multiple screens
