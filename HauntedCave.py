@@ -122,16 +122,21 @@ class Flyer(Ghost):
     def __init__(self, cave, target):
         super(Flyer, self).__init__(cave)
         self.target = target
+        self.topSpeed = 20
+        self.turningRadius = math.pi / 18
+    
     def update(self):
         #self.flap(random.choice(directions))
         self.chase(self.target)
+        if self.speed > self.topSpeed:
+            self.speed = self.topSpeed
         super(Flyer, self).update()
     def chase(self, target):        
         dy = self.target.y - self.y
         dx = self.target.x - self.x
         angle = math.atan2(dx, -dy)
-        approachVector = addVectors((angle, 1), (target.angle, target.speed))
-        self.flap((angle, 1))
+        self.angle = angle
+        self.flap((self.angle, 1))
         
 
 #Cave object, holds everything else within it. Scrolls across multiple screens
