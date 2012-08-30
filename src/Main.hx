@@ -9,6 +9,21 @@ import flash.Lib;
  * @author Josh Eklund
  */
 
+class Vector
+{
+	var angle : Float;
+	var length : Float;
+	
+	function add(vector2 : Vector)
+	{
+		var x = Math.sin(angle) * length + Math.sin(vector2.angle) * vector2.length;
+		var y = Math.cos(angle) * length + Math.cos(vector2.angle) * vector2.length;
+		length = Math.sqrt(x * x + y * y);
+		angle = 0.5 * Math.PI - Math.atan2(y, x);
+	}
+    
+}
+
 class Main 
 {
 	
@@ -19,7 +34,12 @@ class Main
     static var moveX : Float = 0; // the movement per frame of the rectangle on the horizontal axis
     static var moveY : Float = 0; // the movement per frame of the rectangle on the vertical axis
 	
-	static var gravity : Float = 0.5;
+	static var gravity : Float = 0.3;
+	
+	static function addVectors(vector1, vector2)
+	{
+		
+	}
 	
 
     static function main()
@@ -92,4 +112,12 @@ class Main
 			moveY = -moveY;
 		}
     }
+}
+
+class Ghost
+{
+	function draw()
+	{
+		
+	}
 }
