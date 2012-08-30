@@ -1,5 +1,6 @@
 package ;
 
+import flash.display.Shape;
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
 import flash.Lib;
@@ -13,6 +14,12 @@ class Vector
 {
 	var angle : Float;
 	var length : Float;
+	
+	public function new(angle, length)
+	{
+		this.angle = angle;
+		this.length = length;
+	}
 	
 	function add(vector2 : Vector)
 	{
@@ -35,15 +42,10 @@ class Main
     static var moveY : Float = 0; // the movement per frame of the rectangle on the vertical axis
 	
 	static var gravity : Float = 0.3;
-	
-	static function addVectors(vector1, vector2)
-	{
-		
-	}
-	
 
     static function main()
     {
+		var player = new Ghost();
         myRectangle  = new flash.display.Shape();
         myRectangle.graphics.beginFill ( 0x990000 );
         myRectangle.graphics.lineStyle ( 1, 0x000000, 1, false, flash.display.LineScaleMode.NONE );
@@ -116,6 +118,27 @@ class Main
 
 class Ghost
 {
+	var velocity: Vector;
+	var x: Int;
+	var y: Int;
+	var width: Int;
+	var height: Int;
+	var box: Shape;
+	
+	public function new()
+	{
+		velocity = new Vector(0, 0);
+		x = 0;
+		y = 0;
+		width = 50;
+		height = 50;
+        box  = new flash.display.Shape();
+        box.graphics.beginFill ( 0x990000 );
+        box.graphics.lineStyle ( 1, 0x000000, 1, false, flash.display.LineScaleMode.NONE );
+        box.graphics.drawRect ( x, y, width, height);
+        box.graphics.endFill ();
+		
+	}
 	function draw()
 	{
 		
