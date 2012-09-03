@@ -37,15 +37,6 @@ class Vector
 class Main 
 {
 	
-    static var myRectangle : flash.display.Shape;
-    static var rectangleWidth = 50;
-    static var rectangleHeight = 50;
-   
-    static var moveX : Float = 0; // the movement per frame of the rectangle on the horizontal axis
-    static var moveY : Float = 0; // the movement per frame of the rectangle on the vertical axis
-	
-	static var gravity : Float = 0.3;
-	
 	static var player : Ghost;
 	
 
@@ -76,16 +67,6 @@ class Main
    
     static function key_up(event:flash.events.KeyboardEvent)
     {
-		/*
-        if (event.keyCode == 37 && moveX == -1) // left arrow
-            moveX = 0;
-        else if (event.keyCode == 39 && moveX == 1) // right arrow
-            moveX = 0;
-        else if (event.keyCode == 38 && moveY == -1) // up arrow
-            moveY = 0;
-        else if (event.keyCode == 40 && moveY == 1) // down arrow
-            moveY = 0;
-			*/
     }
 
     static function onEnterFrame()
@@ -123,13 +104,30 @@ class Ghost
 	{
         x += Math.sin(velocity.angle) * velocity.length;
         y -= Math.cos(velocity.angle) * velocity.length;
+        //bounce off walls
+        if (x < 0)
+		{
+			x = 0;
+            velocity.angle = -velocity.angle;
+		}
+		if (x > Lib.current.stage.stageWidth - width - 1)
+		{
+			x = Lib.current.stage.stageWidth - width - 1;
+			velocity.angle = - velocity.angle;
+		}
+        if (y < 0)
+		{
+			y = 0;
+			velocity.angle = Math.PI - velocity.angle;
+		}
+		if (y > Lib.current.stage.stageHeight - height - 1)
+		{
+			y = Lib.current.stage.stageHeight - height - 1;
+            velocity.angle = Math.PI - velocity.angle;
+		}
+			
 		box.x = x;
 		box.y = y;
-        /*bounce off walls
-        if (x < width / 2 || x > self.cave.width - self.width / 2)
-            self.angle = -self.angle
-        if self.y < self.height / 2 or self.y > self.cave.height - self.height / 2:
-            self.angle = math.pi - self.angle
-		*/
+
 	}
 }
