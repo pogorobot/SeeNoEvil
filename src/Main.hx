@@ -52,11 +52,7 @@ class Main
     static function main()
     {
 		player = new Ghost();
-        myRectangle  = new flash.display.Shape();
-        myRectangle.graphics.beginFill ( 0x990000 );
-        myRectangle.graphics.lineStyle ( 1, 0x000000, 1, false, flash.display.LineScaleMode.NONE );
-        myRectangle.graphics.drawRect ( 0, 0, rectangleWidth, rectangleHeight);
-        myRectangle.graphics.endFill ();
+		player.draw();
 
         flash.Lib.current.addChild(player.box);
 
@@ -95,28 +91,6 @@ class Main
     static function onEnterFrame()
     {
 		player.move();
-		player.draw();
-        // here we prevent the rectangle to move out of the display area
-        if ( myRectangle.x > flash.Lib.current.stage.stageWidth - rectangleWidth -1)
-		{
-            myRectangle.x = flash.Lib.current.stage.stageWidth - rectangleWidth -1;
-			moveX = - moveX; //Bounce
-		}
-        else if ( myRectangle.x <    0 )
-		{
-            myRectangle.x = 0;
-			moveX = -moveX; //Bounce
-		}
-        if ( myRectangle.y > flash.Lib.current.stage.stageHeight - rectangleHeight -1)
-		{
-            myRectangle.y = flash.Lib.current.stage.stageHeight - rectangleHeight -1;
-			moveY = -moveY;
-		}
-        else if ( myRectangle.y <    0 )
-		{
-            myRectangle.y = 0;
-			moveY = -moveY;
-		}
     }
 }
 
@@ -149,7 +123,8 @@ class Ghost
 	{
         x += Math.sin(velocity.angle) * velocity.length;
         y -= Math.cos(velocity.angle) * velocity.length;
-		box.graphics.drawRect(x, y, width, height);
+		box.x = x;
+		box.y = y;
         /*bounce off walls
         if (x < width / 2 || x > self.cave.width - self.width / 2)
             self.angle = -self.angle
