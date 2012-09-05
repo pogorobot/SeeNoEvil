@@ -82,6 +82,7 @@ class Ghost
 	var y: Float;
 	var width: Int;
 	var height: Int;
+	var color: Int;
 	public var box: Shape;
 	
 	public function new()
@@ -91,11 +92,12 @@ class Ghost
 		y = 0;
 		width = 50;
 		height = 50;
+		color = 0x220099;
         box  = new flash.display.Shape();
 	}
 	public function draw()
 	{
-        box.graphics.beginFill ( 0x990000 );
+        box.graphics.beginFill ( color );
         box.graphics.lineStyle ( 1, 0x000000, 1, false, flash.display.LineScaleMode.NONE );
         box.graphics.drawRect ( x, y, width, height);
         box.graphics.endFill ();
@@ -129,5 +131,17 @@ class Ghost
 		box.x = x;
 		box.y = y;
 
+	}
+}
+
+class Pest extends Ghost
+{
+	
+	public override function draw()
+	{
+        box.graphics.beginFill ( 0x990000 );
+        box.graphics.lineStyle ( 1, 0x000000, 1, false, flash.display.LineScaleMode.NONE );
+        box.graphics.drawRect ( x, y, width, height);
+        box.graphics.endFill ();
 	}
 }
